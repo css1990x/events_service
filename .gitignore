@@ -36,3 +36,15 @@ dist/
 node_modules/
 bower_components/
 config.js
+seedDatabase/newBookingsFour.csv
+seedDatabase/newBookingsOne.csv
+seedDatabase/newBookingsThree.csv
+seedDatabase/newBookingsTwo.csv
+seedDatabase/newListings.csv
+seedDatabase/newSearches.csv
+seedDatabase/newSearchesTwo.csv 
+seedDatabase/newSearchesThree.csv
+seedDatabase/newSearchesFour.csv
+seedDatabase/newSearchesFive.csv
+seedDatabase/newSearchesSix.csv
+seedDatabase/updatedBookings.csv
