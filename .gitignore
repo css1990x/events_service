@@ -36,6 +36,17 @@ dist/
 node_modules/
 bower_components/
 config.js
+queue.js
+jmeter.log
+randomdata.js
+config.json
+interviewprompt.js 
+newrelic.js
+queue.js
+hello.yml
+newrelic_agent.log
+randomdata.js
+updatedBookings.csv
 seedDatabase/newBookingsFour.csv
 seedDatabase/newBookingsOne.csv
 seedDatabase/newBookingsThree.csv

@@ -3,7 +3,7 @@ const client = new cassandra.Client({ contactPoints: ['127.0.0.1']});
 
 client.connect()
   .then(function() {
-    var query = "CREATE KEYSPACE IF NOT EXISTS events WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'}"; 
+    var query = "CREATE KEYSPACE IF NOT EXISTS events WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '2'}"; 
     return client.execute(query); 
   })
   .then(function() {
