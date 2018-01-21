@@ -144,6 +144,8 @@ app.post('/events/searches', (req, res) => {
     var q = {}; 
     q['query'] = 'INSERT INTO events.newsearches(event_type, user_uuid, created_at, query) values(?, ?, ?, ?)';
     q['params'] = [req.body.event_type, req.body.user_uuid, JSON.parse(req.body.created_at), req.body.query]; 
+    res.sendStatus(201);
+    res.end(); 
   } else {
     var queries = []; 
     while (queries.length < 60) {
@@ -171,20 +173,37 @@ app.post('/events/searches', (req, res) => {
 });
 
 app.post('/events/new_listings', (req, res) => {
-  var params = [req.body.event_type, req.body.listing_uuid, req.body.created_at]; 
-  // var params = ['new listing', chance.guid(), chance.date({year: 2017})]; 
-  // console.log(params);
-  // generateRandomNewListing(params); 
-  var query = 'INSERT INTO events.newListings(event_type, listing_uuid, created_at) values(?, ?, ?)';
-  cassandraDb.client.execute(query, params, {prepare: true})
-    .then((results) => {
-      res.status(201);
-      res.end(); 
-    })
-    .catch((err) => {
-      res.status(403);
-      res.send(params);
-    });
+  if (listingsStack.length < 60) {
+    var q = {}; 
+    q['query'] = 'INSERT INTO events.newListings(event_type, listing_uuid, created_at) values(?, ?, ?)';
+    q['params'] = [req.body.event_type, req.body.listing_uuid, JSON.parse(req.body.created_at)];
+    listingsStack.push(q);
+    res.sendStatus(201);
+    res.end(); 
+  } else {
+    var queries = []; 
+    while (queries.length < 60) {
+      queries.push(listingsStack.pop());
+    }
+    listingsStack.push({'query': 'INSERT INTO events.newListings(event_type, listing_uuid, created_at) values(?, ?, ?)', 'params': [req.body.event_type, req.body.listing_uuid, JSON.parse(req.body.created_at)]});
+    cassandraDb.client.batch(queries, {prepare: true})
+      .then((results) => {
+        res.sendStatus(201);
+        res.end(); 
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(403);
+        res.send();
+        // res.send();
+      });
+    
+  }
+  // var params = [req.body.event_type, req.body.listing_uuid, req.body.created_at]; 
+  // // var params = ['new listing', chance.guid(), chance.date({year: 2017})]; 
+  // // console.log(params);
+  // // generateRandomNewListing(params); 
+  // var query = 'INSERT INTO events.newListings(event_type, listing_uuid, created_at) values(?, ?, ?)';
 });
 
 app.get('/events/searches', (req, res) => {
@@ -193,17 +212,36 @@ app.get('/events/searches', (req, res) => {
 });
 
 app.post('/events/updated_bookings', (req, res) => {
-  var params = [req.body.event_type, req.body.created_at, req.body.update_uuid, req.body.status]; 
-  // var params = ['updated booking', chance.date({year: 2017}), chance.guid(), (Math.random() > 0.00001)];
-  var query = 'INSERT INTO events.updatedBookings(event_type, created_at, update_uuid, status) values(?, ?, ?, ?)';
-  cassandraDb.client.execute(query, params, {prepare: true})
-    .then(result => {
-      res.status(201);
-      res.end();
-    }) 
-    .catch((err) => {
-      res.sendStatus(403);
-    }); 
+  if (updatesStack.length < 60) {
+    var q = {}; 
+    q['query'] = 'INSERT INTO events.updatedBookings(event_type, created_at, update_uuid, status) values(?, ?, ?, ?)';
+    q['params'] = [req.body.event_type, JSON.parse(req.body.created_at), req.body.update_uuid, true];
+    updatesStack.push(q); 
+    res.status(201); 
+    res.end();
+  } else {
+    var queries = []; 
+    while (updatesStack.length > 0) {
+      queries.push(updatesStack.pop()); 
+    }
+    var q = {}; 
+    q['query'] = 'INSERT INTO events.updatedBookings(event_type, created_at, update_uuid, status) values(?, ?, ?, ?)';
+    q['params'] = [req.body.event_type, JSON.parse(req.body.created_at), req.body.update_uuid, req.body.status];
+    updatesStack.push(q);
+    // var params = [req.body.event_type, req.body.created_at, req.body.update_uuid, req.body.status]; 
+    // // var params = ['updated booking', chance.date({year: 2017}), chance.guid(), (Math.random() > 0.00001)];
+    // var query = 'INSERT INTO events.updatedBookings(event_type, created_at, update_uuid, status) values(?, ?, ?, ?)';
+    cassandraDb.client.batch(queries, {prepare: true})
+      .then(result => {
+        res.status(201);
+        res.end();
+      }) 
+      .catch((err) => {
+        console.log(err); 
+        res.sendStatus(403);
+      }); 
+
+  }
 }); 
 
 var server = app.listen(PORT, () => {
