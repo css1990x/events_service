@@ -9,7 +9,7 @@ const eventTypes = ['updated booking', 'booking', 'new listing', 'search'];
 //   // console.log(chance.country({full: true}));
 // }
 
-
+//EDITOR'S NOTE: BELOW LINES WERE COMMENTED OUT BC DATABASE WAS ALREADY SEEDED WITH 10M PLUS ENTRIES
 
 // var listing_uuid = Math.floor(Math.random() * 35000); 
 // var events = ['booking', 'search', 'updated booking', 'new listing']; 

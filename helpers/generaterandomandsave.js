@@ -8,12 +8,6 @@ var generateRandomNewListing = (params) => {
       return result; 
     })
     .catch((err) => (console.error('error', err)));
-  // var newListing = {
-  //   'event_type': 'new listing',
-  //   'listing_uuid': l,
-  //   'created_at': chance.date({year: 2017}) 
-  // };
-  // return newListing;
 };
 
 var generateRandomNewBooking = (params) => {
@@ -23,13 +17,6 @@ var generateRandomNewBooking = (params) => {
       return result; 
     })
     .catch((err) => (console.error('error', err)));
-  // var newBooking = {
-  //   'event_type': 'new booking',
-  //   'booking_uuid': l, 
-  //   'has_pa': (l % 2 === 0),
-  //   'created_at': chance.date({year: 2017})
-  // };
-  // return newBooking; 
 }; 
 
 
@@ -40,13 +27,6 @@ var generateRandomSearch = (params) => {
       return result; 
     })
     .catch((err) => (console.error('error', err))); 
-  // var newSearch = {
-  //   'event_type': 'new search', 
-  //   'user_uuid': Math.floor(Math.random() * 2000000),
-  //   'search_date': chance.date({year: 2017}),
-  //   'query': (chance.city() + ',' + chance.country({ full: true}))
-  // };
-  // return newSearch;
 }; 
 
 var getAllBookings = () =>{
@@ -67,13 +47,6 @@ var generateUpdatedBookings = (params) => {
   cassandraDb.client.execute(query, params, {prepare: true})
     .then(result => (console.log('inserted'))) 
     .catch((err) => (console.error('error', err))); 
-  // var newUpdate = {
-  //   'event_type': 'updated bookings',
-  //   'update_uuid': l,
-  //   'created_at': chance.date({year: 2017}), 
-  //   'status': true 
-  // };
-  // return newUpdate;
 };
 module.exports.generateRandomSearch = generateRandomSearch; 
 module.exports.generateRandomNewBooking = generateRandomNewBooking;
